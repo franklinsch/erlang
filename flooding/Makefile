@@ -4,7 +4,7 @@
 
 .SUFFIXES: .erl .beam
 
-MODULES  = system1 system2 system3 system4 peer1 peer3 peer4
+MODULES  = system1 system2 system3 system4 system5 peer1 peer3 peer4 peer5
 HOSTS    = 3
 HOSTSm1  = 2
 
@@ -46,6 +46,9 @@ run3:	all
 	$(L_ERL) -s system3 start
 
 run4:	all
+	$(L_ERL) -s system4 start
+
+run5:	all
 	$(L_ERL) -s system4 start
 
 # to run manually, run make node1 and make node2 in separate windows

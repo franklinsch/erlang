@@ -18,9 +18,10 @@ start() ->
   neighbours(Peers,8,[7,9,10]),
   neighbours(Peers, 9, [8, 10]),
   neighbours(Peers, 10, [8, 9]),
+  
 
   [FirstPeer | _] = Peers,
-  FirstPeer ! {hello, 0}.
+  FirstPeer ! {hello, 0, 0}.
 
 neighbours(Peers, Index, Neighbours) ->
   Peer = lists:nth(Index, Peers),
