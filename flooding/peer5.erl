@@ -16,12 +16,14 @@ next(Index, Peers, 0) ->
                               Peer ! {hello, Index}
                           end,
                           Peers),
-            next(Index, Peers, 1, Parent, length(Peers))
+            next(Index, Peers, 1, Parent, 0)
   end.
 
-next(Index, Peers, Count, Parent, NumChildren) ->
-  receive {hello} ->
-            next(Index, Peers, Count + 1)
+next(Index, Peers, Count, Parent, Children) ->
+  receive {hello, Parent} ->
+            next(Index, Peers, Count + 1, Parent, Children);
+          {children, NewChildren} ->
+            next(Index, Peer, Count + 1, Parent, Children + NewChildren)
   after 1000 ->
           io:format("Peer ~p Parent ~p Messages seen = ~p Children ~p~n", [Index, Parent, Count, NumChildren]),
           exit(normal)
