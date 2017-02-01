@@ -27,10 +27,23 @@ next(Index, Peers, Count, Parent, ParentID, Children) ->
   receive {hello, Parent} ->
             next(Index, Peers, Count + 1, Parent, ParentID, Children);
           child ->
-            Parent ! {children, Children}
             next(Index, Peers, Count + 1, Parent, ParentID, Children + 1)
   after 1000 ->
-          io:format("Peer ~p Parent ~p Messages seen = ~p Children ~p~n", [Index, Parent, Count, Children]),
-          exit(normal)
+          TotalChildren = children(Index, Children, 0),
+          case ParentID of
+            0 -> ok;
+            _ -> 
+              ParentID ! {totalChildren, TotalChildren + 1}
+          end,
+          io:format("Peer ~p Parent ~p Messages seen = ~p Children ~p TotalChildren ~p~n", [Index, Parent, Count, Children, TotalChildren])
   end.
 
+
+children(Index, Children, Sum) ->
+  case Children of
+    0 -> Sum;
+    _ -> receive
+           {totalChildren, TotalChildren} ->
+             children(Index, Children - 1, Sum + TotalChildren)
+         end
+  end.

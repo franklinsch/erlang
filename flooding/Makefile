@@ -49,7 +49,7 @@ run4:	all
 	$(L_ERL) -s system4 start
 
 run5:	all
-	$(L_ERL) -s system4 start
+	$(L_ERL) -s system5 start
 
 # to run manually, run make node1 and make node2 in separate windows
 # then make man2, remove manually
