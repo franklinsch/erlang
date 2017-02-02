@@ -31,6 +31,7 @@ next(Index, Peers, Count, Parent, ParentID, Children) ->
   after 1000 ->
           TotalChildren = children(Index, Children, 0),
           case ParentID of
+            % If ParentID is invalid (i.e. if the parent process is system5, do not forward message.
             0 -> ok;
             _ -> 
               ParentID ! {totalChildren, TotalChildren + 1}
