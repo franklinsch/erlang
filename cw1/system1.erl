@@ -13,5 +13,5 @@ spawnProcesses(NumClients, FullyConnected) ->
   case FullyConnected of
     false -> Clients;
     true  -> 
-      [ID ! {neighbors, Clients} || {Name, ID} <- Clients]
+      [ID ! {neighbors, Clients} || {_, ID} <- Clients]
   end.
