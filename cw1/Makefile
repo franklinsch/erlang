@@ -9,6 +9,8 @@ MODULES  = system1 client
 
 ERLC	= erlc -o ebin
 
+L_ERL     = erl -noshell -pa ebin -setcookie pass
+
 ebin/%.beam: %.erl
 	$(ERLC) $<
 
