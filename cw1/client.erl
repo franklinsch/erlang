@@ -12,26 +12,41 @@ neighbors(Name) ->
 task(Name, Neighbors) ->
   receive {task1, start, Max_messages, Timeout} ->
             % Map format: {Name, NumReceived}}
-            Received = maps:from_list([{ClientName, {0, 0}} || 
+            Received = maps:from_list([{ClientName, 0} || 
                                        {ClientName, _} <- Neighbors]),
             timer:send_after(Timeout, timeout),
             start(Max_messages, Timeout, Name, Neighbors, 0, Received)
   end.
 
 start(Max_messages, Timeout, Name, Neighbors, Sent, Received) ->
-  broadcast_after(rand:uniform(500), Neighbors, {message, Name}),
-  receive timeout ->
-            Communications = communications(Sent, Received),
-            io:format("~p: ~p", [Name, Communications]);
-          {message, ClientName} -> 
-            NumReceived = maps:get(ClientName, Received),
-            Received2 = maps:update(ClientName, NumReceived + 1, Received),
-            start(Max_messages, Timeout, Name, Neighbors, Sent, Received2)
-  end.  
+  receive 
+    timeout ->
+      printStats(Name, Sent, Received);
+    {message, ClientName} -> 
+      NumReceived = maps:get(ClientName, Received),
+      Received2 = maps:update(ClientName, NumReceived + 1, Received),
+      start(Max_messages, Timeout, Name, Neighbors, Sent, Received2)
+  after rand:uniform(1) ->
+          if 
+            Max_messages == Sent ->
+              printStats(Name, Sent, Received);
+            true ->
+              broadcast(Neighbors, {message, Name}),
+              start(Max_messages, Timeout, Name, Neighbors, Sent + 1, Received)
+          end
+  end.
 
-broadcast_after(Time, Clients, Message) ->
-  [timer:send_after(Time, Client, Message) || Client <- Clients].
+broadcast(Clients, Message) ->
+  [ID ! Message || {_, ID} <- Clients].
 
 communications(Sent, Received) ->
   Names = lists:sort(maps:keys(Received)),
-  string:join([{Name, {Sent, maps:get(Name, Received)}} || Name <- Names], " "). 
+  lists:map(fun(Name) ->
+                T = io_lib:format("~p", [{Sent, maps:get(Name, Received)}]),
+                lists:flatten(T)
+            end,
+            Names).
+
+printStats(Name, Sent, Received) ->
+  Communications = communications(Sent, Received),
+  io:format("~p: ~p~n", [Name, Communications]).
