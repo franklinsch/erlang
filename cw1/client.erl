@@ -30,15 +30,16 @@ start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent, Received) ->
     {message, ClientName} ->
       NumReceived = maps:get(ClientName, Received),
       Received2 = maps:update(ClientName, NumReceived + 1, Received),
-      start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent, Received2)
+      start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent, 
+            Received2)
   after 0 ->
           if 
             Max_messages == Sent and not NoSendLimit ->
               printStats(Name, Sent, Received);
             true ->
               broadcast(Neighbors, {message, Name}),
-              start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent + 1,
-                    Received)
+              start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, 
+                    Sent + 1, Received)
           end
   end.
 
