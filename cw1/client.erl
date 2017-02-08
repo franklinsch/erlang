@@ -17,7 +17,7 @@ task(Name, Neighbors) ->
             timer:send_after(Timeout, timeout),
             NoLimit = case Timeout of
                         0 -> true;
-                        true -> false
+                        _ -> false
                       end,
             start(Max_messages, NoLimit, Timeout, Name, Neighbors, 0, Received)
   end.
