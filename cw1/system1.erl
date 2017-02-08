@@ -5,7 +5,7 @@ start(Args) ->
   [FirstArg | _] = Args,
   {NumClients, _} = string:to_integer(atom_to_list(FirstArg)),
   Clients = spawnProcesses(NumClients),
-  [Client ! {task1, start, 0, 3000} || {_, Client} <- Clients].
+  [Client ! {task1, start, 1000, 3000} || {_, Client} <- Clients].
 
 spawnProcesses(NumClients) ->
   Clients = [{ClientID, spawn(client, init, [ClientID])} || ClientID <- lists:seq(1, NumClients)],

@@ -15,7 +15,11 @@ task(Name, Neighbors) ->
             Received = maps:from_list([{ClientName, 0} ||
                                        {ClientName, _} <- Neighbors]),
             timer:send_after(Timeout, timeout),
-            start(Max_messages, true, Timeout, Name, Neighbors, 0, Received)
+            NoLimit = case Timeout of
+                        0 -> true;
+                        _ -> false
+                      end,
+            start(Max_messages, NoLimit, Timeout, Name, Neighbors, 0, Received)
   end.
 
 start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent, Received) ->
@@ -26,8 +30,8 @@ start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent, Received) ->
       NumReceived = maps:get(ClientName, Received),
       Received2 = maps:update(ClientName, NumReceived + 1, Received),
       start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent, Received2)
-  after 1 ->
-          if
+  after 0 ->
+          if 
             Max_messages == Sent and not NoLimit ->
               printStats(Name, Sent, Received);
             true ->
