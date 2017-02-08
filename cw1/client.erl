@@ -19,25 +19,26 @@ task(Name, Neighbors) ->
                         0 -> true;
                         _ -> false
                       end,
-            start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, 0, 
+            start(Max_messages, NoSendLimit, 0, Name, Neighbors, 0, 
                   Received)
   end.
 
-start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent, Received) ->
+start(Max_messages, NoSendLimit, Delay, Name, Neighbors, Sent, Received) ->
   receive
     timeout ->
       printStats(Name, Sent, Received);
     {message, ClientName} ->
       Received2 = maps:update_with(ClientName, fun(V) -> V + 1 end, Received),
-      start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent, 
+      start(Max_messages, NoSendLimit, Delay, Name, Neighbors, Sent, 
             Received2)
-  after 0 ->
+  after Delay ->
           if 
             (Sent >= Max_messages) and not NoSendLimit ->
-              printStats(Name, Sent, Received);
+              % If sent Max_messages, process the messages in the queue until timeout.
+              start(Max_messages, NoSendLimit, infinity, Name, Neighbors, Sent, Received);
             true ->
               broadcast(Neighbors, {message, Name}),
-              start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, 
+              start(Max_messages, NoSendLimit, Delay, Name, Neighbors, 
                     Sent + 1, Received)
           end
   end.
@@ -54,11 +55,5 @@ communications(Sent, Received) ->
             Names).
 
 printStats(Name, Sent, Received) ->
-  receive {message, ClientName} ->
-      NumReceived = maps:get(ClientName, Received),
-      Received2 = maps:update(ClientName, NumReceived + 1, Received),
-      printStats(Name, Sent, Received2)
-  after 0 ->
-          Communications = communications(Sent, Received),
-          io:format("~p: ~p~n", [Name, Communications])
-  end.
+  Communications = communications(Sent, Received),
+  io:format("~p: ~p~n", [Name, Communications]).
