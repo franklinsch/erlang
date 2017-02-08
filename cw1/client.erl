@@ -5,14 +5,14 @@ init(Name) ->
   neighbors(Name).
 
 neighbors(Name) ->
-  receive {neighbors, Neighbors} -> 
+  receive {neighbors, Neighbors} ->
             task(Name, Neighbors)
   end.
 
 task(Name, Neighbors) ->
   receive {task1, start, Max_messages, Timeout} ->
             % Map format: {Name, NumReceived}}
-            Received = maps:from_list([{ClientName, 0} || 
+            Received = maps:from_list([{ClientName, 0} ||
                                        {ClientName, _} <- Neighbors]),
             timer:send_after(Timeout, timeout),
             NoLimit = case Timeout of
@@ -23,10 +23,10 @@ task(Name, Neighbors) ->
   end.
 
 start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent, Received) ->
-  receive 
+  receive
     timeout ->
       printStats(Name, Sent, Received);
-    {message, ClientName} -> 
+    {message, ClientName} ->
       NumReceived = maps:get(ClientName, Received),
       Received2 = maps:update(ClientName, NumReceived + 1, Received),
       start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent, Received2)
@@ -36,7 +36,7 @@ start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent, Received) ->
               printStats(Name, Sent, Received);
             true ->
               broadcast(Neighbors, {message, Name}),
-              start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent + 1, 
+              start(Max_messages, NoLimit, Timeout, Name, Neighbors, Sent + 1,
                     Received)
           end
   end.
