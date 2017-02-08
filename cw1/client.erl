@@ -28,13 +28,12 @@ start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent, Received) ->
     timeout ->
       printStats(Name, Sent, Received);
     {message, ClientName} ->
-      NumReceived = maps:get(ClientName, Received),
-      Received2 = maps:update(ClientName, NumReceived + 1, Received),
+      Received2 = maps:update_with(ClientName, fun(V) -> V + 1 end, Received),
       start(Max_messages, NoSendLimit, Timeout, Name, Neighbors, Sent, 
             Received2)
-  after 1 ->
+  after 0 ->
           if 
-            (Max_messages == Sent) and not NoSendLimit ->
+            (Sent >= Max_messages) and not NoSendLimit ->
               printStats(Name, Sent, Received);
             true ->
               broadcast(Neighbors, {message, Name}),
@@ -55,5 +54,11 @@ communications(Sent, Received) ->
             Names).
 
 printStats(Name, Sent, Received) ->
-  Communications = communications(Sent, Received),
-  io:format("~p: ~p~n", [Name, Communications]).
+  receive {message, ClientName} ->
+      NumReceived = maps:get(ClientName, Received),
+      Received2 = maps:update(ClientName, NumReceived + 1, Received),
+      printStats(Name, Sent, Received2)
+  after 1 ->
+          Communications = communications(Sent, Received),
+          io:format("~p: ~p~n", [Name, Communications])
+  end.
