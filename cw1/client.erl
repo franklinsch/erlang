@@ -26,7 +26,7 @@ start(Max_messages, Timeout, Name, Neighbors, Sent, Received) ->
       NumReceived = maps:get(ClientName, Received),
       Received2 = maps:update(ClientName, NumReceived + 1, Received),
       start(Max_messages, Timeout, Name, Neighbors, Sent, Received2)
-  after rand:uniform(1) ->
+  after 1 ->
           if 
             Max_messages == Sent ->
               printStats(Name, Sent, Received);
