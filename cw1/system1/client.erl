@@ -45,6 +45,7 @@ broadcast(Clients, Message) ->
   [ID ! Message || {_, ID} <- Clients].
 
 communications(Sent, Received) ->
+  % TODO: If the key is a string, will sort lexicographically.
   Names = lists:sort(maps:keys(Received)),
   lists:map(fun(Name) ->
                 T = io_lib:format("~p", [{Sent, maps:get(Name, Received)}]),
