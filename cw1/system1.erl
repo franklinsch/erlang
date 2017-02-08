@@ -9,7 +9,7 @@ start(Args) ->
 
 spawnProcesses(NumClients) ->
   ClientNames = lists:seq(1, NumClients),
-  Clients = [{Name, spawn(client, init, [Name])} 
+  Clients = [{Name, spawn(client, init, [Name])}
              || Name <- ClientNames],
   [ID ! {neighbors, Clients} || {_, ID} <- Clients],
   Clients.
