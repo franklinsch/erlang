@@ -17,32 +17,26 @@ task(Name, Neighbors) ->
             Received = maps:from_list([{ClientName, 0} ||
                                        {ClientName, _} <- Neighbors]),
             timer:send_after(Timeout, timeout),
-            NoSendLimit = case Timeout of
-                        0 -> true;
-                        _ -> false
-                      end,
-            start(Max_messages, NoSendLimit, 0, Name, Neighbors, 0, 
-                  Received)
+            start(Max_messages, 0, Name, Neighbors, 0, Received)
   end.
 
-start(Max_messages, NoSendLimit, Delay, Name, Neighbors, Sent, Received) ->
+start(Max_messages, Delay, Name, Neighbors, Sent, Received) ->
   receive
     timeout ->
       printStats(Name, Sent, Received);
     {message, ClientName} ->
       Received2 = maps:update_with(ClientName, fun(V) -> V + 1 end, Received),
-      start(Max_messages, NoSendLimit, Delay, Name, Neighbors, Sent, 
-            Received2)
+      start(Max_messages, Delay, Name, Neighbors, Sent, Received2)
   after Delay ->
           if 
-            (Sent >= Max_messages) and not NoSendLimit ->
+            (Sent >= Max_messages) and (Max_messages /= 0) ->
               % If sent Max_messages, process the messages in the queue until 
               % timeout.
-              start(Max_messages, NoSendLimit, infinity, Name, Neighbors, Sent, 
+              start(Max_messages, infinity, Name, Neighbors, Sent, 
                     Received);
             true ->
               broadcast(Neighbors, {message, Name}),
-              start(Max_messages, NoSendLimit, Delay, Name, Neighbors, 
+              start(Max_messages, Delay, Name, Neighbors, 
                     Sent + 1, Received)
           end
   end.
