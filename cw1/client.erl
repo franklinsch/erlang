@@ -58,7 +58,7 @@ printStats(Name, Sent, Received) ->
       NumReceived = maps:get(ClientName, Received),
       Received2 = maps:update(ClientName, NumReceived + 1, Received),
       printStats(Name, Sent, Received2)
-  after 1 ->
+  after 0 ->
           Communications = communications(Sent, Received),
           io:format("~p: ~p~n", [Name, Communications])
   end.
