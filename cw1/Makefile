@@ -1,4 +1,4 @@
-# Franklin Schrans (fs2014)
+### Franklin Schrans (fs2014)
 # Based on Naranker Dulay's Makefile for Tutorial 2 (Distributed Algorithms)
 
 .SUFFIXES: .erl .beam

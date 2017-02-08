@@ -1,3 +1,5 @@
+%%% Franklin Schrans (fs2014)
+
 -module(system1).
 -export([start/1]).
 

@@ -1,3 +1,5 @@
+%%% Franklin Schrans (fs2014)
+
 -module(client).
 -export([init/1]).
 
@@ -34,8 +36,10 @@ start(Max_messages, NoSendLimit, Delay, Name, Neighbors, Sent, Received) ->
   after Delay ->
           if 
             (Sent >= Max_messages) and not NoSendLimit ->
-              % If sent Max_messages, process the messages in the queue until timeout.
-              start(Max_messages, NoSendLimit, infinity, Name, Neighbors, Sent, Received);
+              % If sent Max_messages, process the messages in the queue until 
+              % timeout.
+              start(Max_messages, NoSendLimit, infinity, Name, Neighbors, Sent, 
+                    Received);
             true ->
               broadcast(Neighbors, {message, Name}),
               start(Max_messages, NoSendLimit, Delay, Name, Neighbors, 
