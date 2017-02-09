@@ -1,11 +1,10 @@
 %%% Franklin Schrans (fs2014)
 
 -module(system2).
--export([start/1]).
+-export([start/0]).
 
-start(Args) ->
-  [FirstArg | _] = Args,
-  {NumClients, _} = string:to_integer(atom_to_list(FirstArg)),
+start() ->
+  NumClients = 5,
   Clients = spawnProcesses(NumClients),
   bindPLs(NumClients),
   [Client ! {task2, start, 1000, 1000} || {_, Client} <- Clients].

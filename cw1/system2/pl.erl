@@ -12,7 +12,10 @@ bindPLs() ->
   end.
 
 next(Client, PLs) ->
-  receive {pl_send, Msg} ->
-            [PL ! {pl_deliver, Msg} || PL <- PLs],
+  receive {pl_send, M} ->
+            [PL ! M || PL <- PLs],
+            next(Client, PLs);
+          M ->
+            Client ! {pl_deliver, M},
             next(Client, PLs)
   end.
