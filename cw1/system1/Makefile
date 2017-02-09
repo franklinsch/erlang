@@ -29,4 +29,4 @@ clean:
 SYSTEM    = system1
 
 run1:	all
-	$(L_ERL) -s $(SYSTEM) start 5
+	$(L_ERL) -s $(SYSTEM) start
