@@ -3,7 +3,7 @@
 
 .SUFFIXES: .erl .beam
 
-MODULES  = system2 client  
+MODULES  = system2 client pl
 
 # BUILD =======================================================
 
@@ -26,7 +26,7 @@ debug:
 clean:
 	rm -f ebin/* erl_crash.dump
 
-SYSTEM    = system1
+SYSTEM    = system2
 
-run1:	all
+run2:	all
 	$(L_ERL) -s $(SYSTEM) start
