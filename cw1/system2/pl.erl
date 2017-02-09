@@ -9,11 +9,11 @@ init() ->
   end.
 
 bindPLs() ->
-  receive {bind_pl, PLs} -> PLs
+  receive {bind_pls, PLs} -> maps:from_list(PLs)
   end.
 
 next(Client, PLs) ->
-  receive {pl_send, M} -> [PL ! M || PL <- PLs];
-          M -> Client ! {pl_deliver, M}
+  receive {pl_send, Dest, M} -> maps:get(Dest, PLs) ! {pl_msg, M};
+          {pl_msg, M} -> Client ! {pl_deliver, M}
   end,
   next(Client, PLs).

@@ -4,28 +4,32 @@
 -export([start/0]).
 
 start() ->
-  NumClients = 5,
-  Clients = spawnProcesses(NumClients),
-  bindPLs(NumClients),
-  [Client ! {task2, start, 1000, 1000} || {_, Client} <- Clients].
+  NumProcesses = 5,
+  Processes = spawnProcesses(NumProcesses),
+  PLs = bindPLs(NumProcesses),
+  [PL ! {pl_msg, {neighbors, Processes}} || PL <- PLs],
+  [PL ! {pl_msg, {task2, start, 1000, 1000}} || PL <- PLs].
 
-spawnProcesses(NumClients) ->
-  Clients = [{ClientID, spawn(client, init, [ClientID, self()])} 
-             || ClientID <- lists:seq(1, NumClients)],
-  [Client ! {neighbors, Clients} || {_, Client} <- Clients],
-  Clients.
+spawnProcesses(NumProcesses) ->
+  Processes = [{ProcessID, spawn(process, init, [ProcessID])} 
+             || ProcessID <- lists:seq(1, NumProcesses)],
+  [Process ! {bind, self()} || {_, Process} <- Processes],
+  {ProcessNames, _} = lists:unzip(Processes),
+  ProcessNames.
 
-bindPLs(NumClients) ->
-  PLs = receivePLs(NumClients, []),
-  [PL ! {bind_pls, lists:delete(PL, PLs)} || PL <- PLs].
+bindPLs(NumProcesses) ->
+  PLs = receivePLs(NumProcesses, []),
+  [PL ! {bind_pls, lists:filter(fun({PL2, _}) -> PL /= PL2 end, PLs)} 
+   || {_, PL} <- PLs],
+  {_, IDs} = lists:unzip(PLs),
+  IDs.
 
-receivePLs(NumClients, PLs) ->
-  case NumClients of
+receivePLs(NumProcesses, PLs) ->
+  case NumProcesses of
     0 -> PLs;
     _ -> 
-      receive {bind_pl, ID} ->
-                PLs2 = lists:append(PLs, [ID]),
-                receivePLs(NumClients - 1, PLs2)
+      receive {bind_pl, Process, ID} ->
+                PLs2 = lists:append(PLs, [{Process, ID}]),
+                receivePLs(NumProcesses - 1, PLs2)
       end
-  end,
-  PLs.
+  end.

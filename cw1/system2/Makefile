@@ -3,7 +3,7 @@
 
 .SUFFIXES: .erl .beam
 
-MODULES  = system2 client pl
+MODULES  = system2 process pl app
 
 # BUILD =======================================================
 
