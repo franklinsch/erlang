@@ -7,12 +7,11 @@ init(Name) ->
   neighbors(Name).
 
 neighbors(Name) ->
-  receive {neighbors, Neighbors} ->
-            task(Name, Neighbors)
-  end.
+  receive {neighbors, Neighbors} -> task(Name, Neighbors) end.
 
 task(Name, Neighbors) ->
   receive {task1, start, Max_messages, Timeout} ->
+
             % Map format: {Name, NumReceived}}
             Received = maps:from_list([{ProcessName, 0} ||
                                        {ProcessName, _} <- Neighbors]),
@@ -45,7 +44,6 @@ broadcast(Processs, Message) ->
   [ID ! Message || {_, ID} <- Processs].
 
 communications(Sent, Received) ->
-  % TODO: If the key is a string, will sort lexicographically.
   Names = lists:sort(maps:keys(Received)),
   Comms = lists:map(fun(Name) ->
                 T = io_lib:format("~p", [{Sent, maps:get(Name, Received)}]),
