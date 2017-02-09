@@ -28,5 +28,5 @@ clean:
 
 SYSTEM    = system1
 
-run1:	all
+run:	all
 	$(L_ERL) -s $(SYSTEM) start

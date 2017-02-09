@@ -4,11 +4,11 @@
 -export([start/0]).
 
 start() ->
-  NumClients = 5,
-  Clients = spawnProcesses(NumClients),
-  [Client ! {task1, start, 1000, 3000} || {_, Client} <- Clients].
+  NumProcesses = 5,
+  Processes = spawnProcesses(NumProcesses),
+  [Process ! {task1, start, 1000, 3000} || {_, Process} <- Processes].
 
-spawnProcesses(NumClients) ->
-  Clients = [{ClientID, spawn(client, init, [ClientID])} || ClientID <- lists:seq(1, NumClients)],
-  [Client ! {neighbors, Clients} || {_, Client} <- Clients],
-  Clients.
+spawnProcesses(NumProcesses) ->
+  Processes = [{ProcessID, spawn(client, init, [ProcessID])} || ProcessID <- lists:seq(1, NumProcesses)],
+  [Process ! {neighbors, Processes} || {_, Process} <- Processes],
+  Processes.
