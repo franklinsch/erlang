@@ -1,7 +1,8 @@
 %%% Franklin Schrans (fs2014)
 
 -module(client).
--export([init/1]).
+-export([init/2]).
 
-init(Name) ->
-  PL = spawn(pl, init, [self()]).
+init(Name, System) ->
+  PL = spawn(pl, init, [self()]),
+  System ! {bind_pl, PL}.

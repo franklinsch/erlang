@@ -11,7 +11,7 @@ start(Args) ->
   [Client ! {task2, start, 1000, 1000} || {_, Client} <- Clients].
 
 spawnProcesses(NumClients) ->
-  Clients = [{ClientID, spawn(client, init, [ClientID])} 
+  Clients = [{ClientID, spawn(client, init, [ClientID, self()])} 
              || ClientID <- lists:seq(1, NumClients)],
   [Client ! {neighbors, Clients} || {_, Client} <- Clients],
   Clients.
@@ -24,7 +24,7 @@ receivePLs(NumClients, PLs) ->
   case NumClients of
     0 -> PLs;
     _ -> 
-      receive {pl_bind, ID} ->
+      receive {bind_pl, ID} ->
                 PLs2 = lists:append(PLs, [ID]),
                 receivePLs(NumClients - 1, PLs2)
       end
