@@ -6,7 +6,7 @@
 init(Name) ->
   receive {bind, System} -> 
             BEB = spawn(beb, init, []),
-            PL = spawn(lossyp2plinks, init, [100]),
+            PL = spawn(lossyp2plinks, init, []),
             PL ! {bind_beb, BEB},
             System ! {bind_pl, Name, PL},
             App = spawn(app, init, [Name]),

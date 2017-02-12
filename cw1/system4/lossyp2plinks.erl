@@ -22,7 +22,7 @@ next(Process, PLs, BEB, Reliability) ->
   next(Process, PLs, BEB, Reliability).
 
 unreliableSend(M, Dest, Reliability) ->
-  case rand:uniform(100) =< Reliability of
+  case rand:uniform(1, 100) < Reliability of
     true -> Dest ! M;
     false -> ok
   end.
