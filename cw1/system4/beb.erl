@@ -3,7 +3,9 @@
 
 init() ->
   Processes = processesReceive(),
-  receive {bind, PL, C} -> next(Processes, PL, C) end.
+  receive {bind, PL, C} -> 
+            C ! {beb_deliver, {neighbors, Processes}},
+            next(Processes, PL, C) end.
 
 processesReceive() ->
   receive {pl_deliver, _, {beb_processes, Processes}} -> Processes end.

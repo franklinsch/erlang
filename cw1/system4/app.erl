@@ -4,12 +4,19 @@
 -export([init/1]).
 
 init(Name) ->
-  receive {bind_beb, BEB} -> task(BEB, Name) end.
+  receive {bind_beb, BEB} -> neighbors(BEB, Name) 
+  end.
 
-task(BEB, Name) ->
+neighbors(BEB, Name) ->
+  receive {beb_deliver, {neighbors, Neighbors}} -> 
+            task(BEB, Name, Neighbors)
+  end.
+
+task(BEB, Name, Neighbors) ->
   receive {beb_deliver, _, {task4, start, Max_messages, Timeout}} ->
             % Map format: {Name, NumReceived}}
-            Received = #{},
+            Received = maps:from_list([{Neighbor, 0} ||
+                                       Neighbor <- Neighbors]),
             timer:send_after(Timeout, timeout),
             start(BEB, Max_messages, 0, Name, 0, Received)
   end.
