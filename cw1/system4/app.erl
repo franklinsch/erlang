@@ -7,7 +7,7 @@ init(Name) ->
   receive {bind_beb, BEB} -> task(BEB, Name) end.
 
 task(BEB, Name) ->
-  receive {beb_deliver, _, {task3, start, Max_messages, Timeout}} ->
+  receive {beb_deliver, _, {task4, start, Max_messages, Timeout}} ->
             % Map format: {Name, NumReceived}}
             Received = #{},
             timer:send_after(Timeout, timeout),

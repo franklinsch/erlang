@@ -3,7 +3,7 @@
 
 .SUFFIXES: .erl .beam
 
-MODULES  = system4 process pl app beb
+MODULES  = system4 process lossyp2plinks app beb
 
 # BUILD =======================================================
 
