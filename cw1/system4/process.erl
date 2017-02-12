@@ -10,7 +10,7 @@ init(Name) ->
             PL ! {bind_beb, BEB},
             System ! {bind_pl, Name, PL},
             App = spawn(app, init, [Name]),
-            PL ! {bind, App},
+            PL ! {bind, {Name, App}},
             App ! {bind_beb, BEB},
             BEB ! {bind, PL, App}
   end.
