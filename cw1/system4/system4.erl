@@ -4,20 +4,21 @@
 -export([start/1]).
 
 start(Args) ->
-  [First, Second | _] = Args,
+  [First, Second, Third| _] = Args,
   {Max_messages, _} = string:to_integer(atom_to_list(First)),
   {Timeout, _} = string:to_integer(atom_to_list(Second)),
+  {PLReliability, _} = string:to_integer(atom_to_list(Third)),
 
   NumProcesses = 5,
-  Processes = spawnProcesses(NumProcesses),
+  Processes = spawnProcesses(NumProcesses, PLReliability),
   PLs = bindPLs(NumProcesses),
   [PL ! {pl_msg, 0, {beb_processes, Processes}} || PL <- PLs],
-  [PL ! {pl_msg, 0, {task3, start, Max_messages, Timeout}} || PL <- PLs].
+  [PL ! {pl_msg, 0, {task4, start, Max_messages, Timeout}} || PL <- PLs].
 
-spawnProcesses(NumProcesses) ->
+spawnProcesses(NumProcesses, PLReliability) ->
   Processes = [{ProcessID, spawn(process, init, [ProcessID])} 
              || ProcessID <- lists:seq(1, NumProcesses)],
-  [Process ! {bind, self()} || {_, Process} <- Processes],
+  [Process ! {bind, self(), PLReliability} || {_, Process} <- Processes],
   {ProcessNames, _} = lists:unzip(Processes),
   ProcessNames.
 

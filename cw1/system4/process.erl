@@ -4,9 +4,9 @@
 -export([init/1]).
 
 init(Name) ->
-  receive {bind, System} -> 
+  receive {bind, System, PLReliability} -> 
             BEB = spawn(beb, init, []),
-            PL = spawn(lossyp2plinks, init, []),
+            PL = spawn(lossyp2plinks, init, [PLReliability]),
             PL ! {bind_beb, BEB},
             System ! {bind_pl, Name, PL},
             App = spawn(app, init, [Name]),
