@@ -28,5 +28,8 @@ clean:
 
 SYSTEM    = system2
 
-run:	all
-	$(L_ERL) -s $(SYSTEM) start
+run1:	all
+	$(L_ERL) -s $(SYSTEM) start 100 1000
+
+run2:	all
+	$(L_ERL) -s $(SYSTEM) start 0 1000

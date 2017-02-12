@@ -1,14 +1,18 @@
 %%% Franklin Schrans (fs2014)
 
 -module(system4).
--export([start/0]).
+-export([start/1]).
 
-start() ->
+start(Args) ->
+  [First, Second | _] = Args,
+  {Max_messages, _} = string:to_integer(atom_to_list(First)),
+  {Timeout, _} = string:to_integer(atom_to_list(Second)),
+
   NumProcesses = 5,
   Processes = spawnProcesses(NumProcesses),
   PLs = bindPLs(NumProcesses),
   [PL ! {pl_msg, 0, {beb_processes, Processes}} || PL <- PLs],
-  [PL ! {pl_msg, 0, {task3, start, 1000, 1000}} || PL <- PLs].
+  [PL ! {pl_msg, 0, {task3, start, Max_messages, Timeout}} || PL <- PLs].
 
 spawnProcesses(NumProcesses) ->
   Processes = [{ProcessID, spawn(process, init, [ProcessID])} 
