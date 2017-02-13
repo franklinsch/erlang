@@ -27,6 +27,7 @@ task(BEB, Name, Neighbors) ->
 start(BEB, Max_messages, Delay, Name, Sent, Received) ->
   receive
     exit_timeout ->
+      printStats(Name, Sent, Received),
       exit(0);
     timeout ->
       printStats(Name, Sent, Received);
