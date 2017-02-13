@@ -3,7 +3,7 @@
 
 .SUFFIXES: .erl .beam
 
-MODULES  = system4 process lossyp2plinks app beb
+MODULES  = system5 process lossyp2plinks app beb
 
 # BUILD =======================================================
 
@@ -26,7 +26,7 @@ debug:
 clean:
 	rm -f ebin/* erl_crash.dump
 
-SYSTEM    = system4
+SYSTEM    = system5
 
 run1:	all
 	$(L_ERL) -s $(SYSTEM) start 100 1000 100
