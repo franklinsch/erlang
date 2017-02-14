@@ -21,11 +21,11 @@ task(Name, Neighbors) ->
 
 start(Max_messages, Delay, Name, Neighbors, Sent, Received) ->
   receive
-    timeout ->
-      printStats(Name, Sent, Received);
     {message, ProcessName} ->
       Received2 = maps:update_with(ProcessName, fun(V) -> V + 1 end, Received),
-      start(Max_messages, Delay, Name, Neighbors, Sent, Received2)
+      start(Max_messages, Delay, Name, Neighbors, Sent, Received2);
+    timeout ->
+      printStats(Name, Sent, Received)
   after Delay ->
           if 
             (Sent >= Max_messages) and (Max_messages /= 0) ->
