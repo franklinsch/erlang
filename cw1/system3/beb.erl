@@ -1,3 +1,5 @@
+% Franklin Schrans (fs2014)
+
 -module(beb).
 -export([init/0]).
 

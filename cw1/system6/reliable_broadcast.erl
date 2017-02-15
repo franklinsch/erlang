@@ -1,3 +1,5 @@
+%%% Franklin Schrans (fs2014)
+
 -module(reliable_broadcast).
 -export([init/0]).
 
