@@ -13,7 +13,8 @@ start(Args) ->
   Processes = spawnProcesses(NumProcesses, PLReliability),
   PLs = bindPLs(NumProcesses),
   [PL ! {pl_msg, 0, {beb_processes, Processes}} || PL <- PLs],
-  [PL ! {pl_msg, 0, {rb_data, 0, {task6, start, Max_messages, Timeout}}} || PL <- PLs].
+  [PL ! {pl_msg, 0, {rb_data, 0, {task6, start, Max_messages, Timeout}}} 
+   || PL <- PLs].
 
 spawnProcesses(NumProcesses, PLReliability) ->
   Processes = [{ProcessID, spawn(process, init, [ProcessID])} 

@@ -6,7 +6,8 @@
 init(Reliability) ->
   PLs = bindPLs(),
   receive {bind_beb, BEB} -> 
-            receive {bind, {Name, Client}} -> next(Name, Client, PLs, BEB, Reliability) 
+            receive {bind, {Name, Client}} -> next(Name, Client, PLs, BEB, 
+                                                   Reliability) 
             end
   end.
 

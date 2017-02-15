@@ -10,7 +10,8 @@ start(Args) ->
 
   NumProcesses = 5,
   Processes = spawnProcesses(NumProcesses),
-  [Process ! {task1, start, Max_messages, Timeout} || {_, Process} <- Processes].
+  [Process ! {task1, start, Max_messages, Timeout} 
+   || {_, Process} <- Processes].
 
 spawnProcesses(NumProcesses) ->
   Processes = [{ProcessID, spawn(client, init, [ProcessID])} 
