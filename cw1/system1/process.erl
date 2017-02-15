@@ -30,7 +30,8 @@ start(Max_messages, Delay, Name, Neighbors, Sent, Received) ->
           if 
             (Sent >= Max_messages) and (Max_messages /= 0) ->
               % If sent Max_messages, process the messages in the queue until 
-              % timeout.
+              % timeout. Setting Delay to infinity enforces all the messages in
+              % the queue to be processed until the timeout message.
               start(Max_messages, infinity, Name, Neighbors, Sent, 
                     Received);
             true ->
@@ -43,6 +44,7 @@ start(Max_messages, Delay, Name, Neighbors, Sent, Received) ->
 broadcast(Processs, Message) ->
   [ID ! Message || {_, ID} <- Processs].
 
+% Constructs a list of the communications between the components.
 communications(Sent, Received) ->
   Names = lists:sort(maps:keys(Received)),
   Comms = lists:map(fun(Name) ->
