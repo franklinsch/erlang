@@ -50,4 +50,7 @@ run7:	all
 	$(L_ERL) -s $(SYSTEM) start 1000 1 100
 
 run8:	all
-	$(L_ERL) -s $(SYSTEM) start 1000 5000 100
+	$(L_ERL) -s $(SYSTEM) start 1000 5000 50
+
+run9:	all
+	$(L_ERL) -s $(SYSTEM) start 1000 5000 80
