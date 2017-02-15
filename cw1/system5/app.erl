@@ -19,8 +19,9 @@ task(BEB, Name, Neighbors) ->
                                        Neighbor <- Neighbors]),
             case Name of
               3 -> timer:send_after(5, exit_timeout);
-              _ -> timer:send_after(Timeout, timeout)
+              _ -> ok
             end,
+            timer:send_after(Timeout, timeout),
             start(BEB, Max_messages, 0, Name, 0, Received)
   end.
 

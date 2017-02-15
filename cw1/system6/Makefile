@@ -45,3 +45,9 @@ run5:	all
 
 run6:	all
 	$(L_ERL) -s $(SYSTEM) start 0 1000 0
+	
+run7:	all
+	$(L_ERL) -s $(SYSTEM) start 1000 1 100
+
+run8:	all
+	$(L_ERL) -s $(SYSTEM) start 1000 5000 100

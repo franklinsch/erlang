@@ -17,6 +17,10 @@ task(RB, Name, Neighbors) ->
             % Map format: {Name, NumReceived}}
             Received = maps:from_list([{Neighbor, 0} ||
                                        Neighbor <- Neighbors]),
+            case Name of
+              3 -> timer:send_after(5, exit_timeout);
+              _ -> ok
+            end,
             timer:send_after(Timeout, timeout),
             start(RB, Max_messages, 0, Name, 0, Received)
   end.
@@ -25,6 +29,9 @@ start(RB, Max_messages, Delay, Name, Sent, Received) ->
   receive
     timeout ->
       printStats(Name, Sent, Received);
+    exit_timeout ->
+      printStats(Name, Sent, Received),
+      exit(0);
     {rb_deliver, From, {message, _}} ->
       Received2 = maps:update_with(From, fun(V) -> V + 1 end, Received),
       start(RB, Max_messages, Delay, Name, Sent, Received2)
@@ -35,7 +42,7 @@ start(RB, Max_messages, Delay, Name, Sent, Received) ->
               % timeout.
               start(RB, Max_messages, infinity, Name, Sent, Received);
             true ->
-              UUID = io_lib:format("~p~p", [Name, Sent]),
+              UUID = {Name, Sent},
               broadcast(RB, {message, UUID}),
               start(RB, Max_messages, Delay, Name, Sent + 1, Received)
           end
@@ -56,4 +63,3 @@ communications(Sent, Received) ->
 printStats(Name, Sent, Received) ->
   Communications = communications(Sent, Received),
   io:format("~p: ~s~n", [Name, Communications]).
-
