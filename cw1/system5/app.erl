@@ -26,11 +26,11 @@ task(BEB, Name, Neighbors) ->
 
 start(BEB, Max_messages, Delay, Name, Sent, Received) ->
   receive
+    timeout ->
+      printStats(Name, Sent, Received);
     exit_timeout ->
       printStats(Name, Sent, Received),
       exit(0);
-    timeout ->
-      printStats(Name, Sent, Received);
     {beb_deliver, From, message} ->
       Received2 = maps:update_with(From, fun(V) -> V + 1 end, 1, Received),
       start(BEB, Max_messages, Delay, Name, Sent, Received2)

@@ -33,3 +33,6 @@ run1:	all
 
 run2:	all
 	$(L_ERL) -s $(SYSTEM) start 0 1000 100
+
+run3:	all
+	$(L_ERL) -s $(SYSTEM) start 100 5 100
